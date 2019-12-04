@@ -3,7 +3,7 @@ from .models import Collection, Snippet, Comment, Tag
 from rest_framework import serializers
 
 
-class CollectionSerializer(serializers.HyperlinkedModelSerializer):
+class CollectionSerializer(serializers.ModelSerializer):
     snippets = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     author = serializers.ReadOnlyField(source='author.username')
 
@@ -16,8 +16,9 @@ class CollectionSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+class SnippetSerializer(serializers.ModelSerializer):
     comments = serializers.PrimaryKeyRelatedField(many=True, queryset=Comment.objects.all())
+    collection = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Snippet
@@ -31,7 +32,15 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
+    stars = serializers.ReadOnlyField()
+    author = serializers.ReadOnlyField(source='author.username')
+    text = serializers.CharField()
+
+    def create(self, validated_data):
+        validated_data['author'] = self.context['request'].user
+        return Comment.objects.create(**validated_data)
+
     class Meta:
         model = Comment
         fields = ('id',
@@ -42,7 +51,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class TagSerializer(serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id',
@@ -50,7 +59,7 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     collections = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     password = serializers.CharField(write_only=True, required=True)
     email = serializers.CharField(write_only=True, required=True)

@@ -28,7 +28,7 @@ class Tag(models.Model):
 class Snippet(models.Model):
     name = models.CharField(max_length=255)
     code = models.TextField()
-    stars = models.PositiveIntegerField()
+    stars = models.PositiveIntegerField(default=0)
     collection = models.ForeignKey(Collection, related_name='snippets', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag)
     linenos = models.BooleanField(default=False)
@@ -51,6 +51,6 @@ class Comment(models.Model):
     text = models.CharField(max_length=1000)
     author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
     snippet = models.ForeignKey(Snippet, related_name='comments', on_delete=models.CASCADE)
-    stars = models.PositiveIntegerField()
+    stars = models.PositiveIntegerField(default=0)
 
 
