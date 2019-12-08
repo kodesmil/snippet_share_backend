@@ -19,15 +19,6 @@ class IsOwnerOrReadOnlySnippet(permissions.BasePermission):
         return obj.collection.author == request.user
 
 
-class IsOwnerOrReadOnlyComment(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        # Write permissions are only allowed to the owner of the comment
-        return obj.author == request.user
-
-
 class IsAdminTag(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):

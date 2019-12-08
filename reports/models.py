@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from snippets.models import Snippet, Comment
+
+from comments.models import Comment
+from snippets.models import Snippet
 
 
 class Report(models.Model):

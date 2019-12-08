@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
-from .models import Collection, Snippet, Comment, Tag
+
+from comments.models import Comment
+from .models import Collection, Snippet, Tag
 from rest_framework import serializers
 
 
@@ -29,25 +31,6 @@ class SnippetSerializer(serializers.ModelSerializer):
                   'collection',
                   'tags',
                   'comments',
-                  )
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    stars = serializers.ReadOnlyField()
-    author = serializers.ReadOnlyField(source='author.username')
-    text = serializers.CharField()
-
-    def create(self, validated_data):
-        validated_data['author'] = self.context['request'].user
-        return Comment.objects.create(**validated_data)
-
-    class Meta:
-        model = Comment
-        fields = ('id',
-                  'text',
-                  'author',
-                  'snippet',
-                  'stars',
                   )
 
 
