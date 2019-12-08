@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
-from .models import Collection, Snippet, Comment, Tag
+
+from comments.models import Comment
+from .models import Collection, Snippet, Tag
 from rest_framework import serializers
 
 
-class CollectionSerializer(serializers.HyperlinkedModelSerializer):
+class CollectionSerializer(serializers.ModelSerializer):
     snippets = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     author = serializers.ReadOnlyField(source='author.username')
 
@@ -16,8 +18,9 @@ class CollectionSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class SnippetSerializer(serializers.HyperlinkedModelSerializer):
+class SnippetSerializer(serializers.ModelSerializer):
     comments = serializers.PrimaryKeyRelatedField(many=True, queryset=Comment.objects.all())
+    collection = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Snippet
@@ -31,18 +34,7 @@ class SnippetSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ('id',
-                  'text',
-                  'author',
-                  'snippet',
-                  'stars',
-                  )
-
-
-class TagSerializer(serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id',
@@ -50,7 +42,7 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
                   )
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     collections = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     password = serializers.CharField(write_only=True, required=True)
     email = serializers.CharField(write_only=True, required=True)

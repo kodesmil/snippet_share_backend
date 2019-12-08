@@ -1,8 +1,8 @@
 from rest_framework import viewsets, generics, permissions
 from django.contrib.auth.models import User
-from .permissions import IsOwnerOrReadOnlyCollection, IsOwnerOrReadOnlySnippet, IsOwnerOrReadOnlyComment, IsAdminTag
-from .models import Collection, Snippet, Comment, Tag
-from .serializers import CollectionSerializer, SnippetSerializer, CommentSerializer, TagSerializer, UserSerializer
+from .permissions import IsOwnerOrReadOnlyCollection, IsOwnerOrReadOnlySnippet, IsAdminTag
+from .models import Collection, Snippet, Tag
+from .serializers import CollectionSerializer, SnippetSerializer, TagSerializer, UserSerializer
 
 
 class CollectionViewSet(viewsets.ModelViewSet):
@@ -21,14 +21,6 @@ class SnippetViewSet(viewsets.ModelViewSet):
     serializer_class = SnippetSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnlySnippet,
-                          )
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnlyComment,
                           )
 
 
