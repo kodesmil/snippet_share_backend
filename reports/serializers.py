@@ -1,4 +1,5 @@
-from snippets.models import Snippet, Comment
+from comments.models import Comment
+from snippets.models import Snippet
 from .models import Report
 from rest_framework import serializers
 

@@ -45,12 +45,3 @@ class Snippet(models.Model):
         formatter = HtmlFormatter(style=self.style, linenos=linenos, full=True, **options)
         self.highlighted = highlight(self.code, lexer, formatter)
         super(Snippet, self).save(*args, **kwargs)
-
-
-class Comment(models.Model):
-    text = models.CharField(max_length=1000)
-    author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
-    snippet = models.ForeignKey(Snippet, related_name='comments', on_delete=models.CASCADE)
-    stars = models.PositiveIntegerField(default=0)
-
-
